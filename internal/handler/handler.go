@@ -206,13 +206,17 @@ func writeJSON(w http.ResponseWriter, resp api.ResponsePayload) {
 // makeHealthHandler returns a simple healthcheck handler that responds 200 OK
 // with a small JSON body. Useful for liveness/readiness probes.
 func makeHealthHandler(logger *slog.Logger) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return func(writer http.ResponseWriter, req *http.Request) {
 		// Log the health check for visibility
 		if logger != nil {
-			logger.InfoContext(r.Context(), "http request", "method", r.Method, "remote", r.RemoteAddr, "path", r.URL.Path)
+			logger.InfoContext(req.Context(), "http request",
+				"method", req.Method,
+				"remote", req.RemoteAddr,
+				"path", req.URL.Path,
+			)
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(writer).Encode(map[string]string{"status": "ok"})
 	}
 }
