@@ -43,8 +43,8 @@ ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 
 # Default runtime environment variables (can be overridden at container runtime)
 ENV PORT=8080
-ENV RATE_LIMIT_RPS=10
-ENV RATE_LIMIT_BURST=20
+ENV RATE_LIMIT_RPS=20
+ENV RATE_LIMIT_BURST=200
 ENV TRUSTED_PROXIES=
 
 # Run as non-root numeric UID (no passwd file required)

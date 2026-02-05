@@ -30,6 +30,6 @@ services:
       - /run
     environment:
       - PORT=8080
-      - RATE_LIMIT_RPS=10
-      - RATE_LIMIT_BURST=20
+      - RATE_LIMIT_RPS=20
+      - RATE_LIMIT_BURST=200
       - TRUSTED_PROXIES=172.0.0.0/8
