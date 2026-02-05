@@ -15,6 +15,12 @@ jobs:
         steps:
             - uses: actions/checkout@v6
 
+            - name: Install kdig
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y knot-dnsutils
+                  kdig --version || true
+
             - name: Set up Go
               uses: actions/setup-go@v6
               with:
