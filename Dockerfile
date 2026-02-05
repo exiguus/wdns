@@ -33,7 +33,7 @@ FROM debian:trixie-slim AS runtime
 
 # Install kdig (knot dnsutils) and CA certificates for DoH/TLS support
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates knot-dnsutils \
+    && apt-get install -y --no-install-recommends ca-certificates knot-dnsutils curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /wdns /usr/local/bin/wdns
@@ -50,3 +50,7 @@ ENV TRUSTED_PROXIES=
 # Run as non-root numeric UID (no passwd file required)
 USER 1000
 ENTRYPOINT ["/usr/local/bin/wdns"]
+
+# Docker healthcheck: probe the internal HTTP health endpoint
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f "http://localhost:${PORT:-8080}/healthz" || exit 1

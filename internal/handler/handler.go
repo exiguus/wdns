@@ -27,6 +27,9 @@ func Register(
 	logger *slog.Logger,
 ) {
 	mux.HandleFunc("/query", makeQueryHandler(resolverRunner, limiter, trustedProxies, logger))
+	// Healthcheck endpoint for readiness/liveness probes
+	mux.HandleFunc("/healthz", makeHealthHandler(logger))
+	mux.HandleFunc("/health", makeHealthHandler(logger))
 }
 
 func emptyRequestPayload() api.RequestPayload {
@@ -198,4 +201,18 @@ func writeJSON(w http.ResponseWriter, resp api.ResponsePayload) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(resp.Status)
 	_ = json.NewEncoder(w).Encode(resp)
+}
+
+// makeHealthHandler returns a simple healthcheck handler that responds 200 OK
+// with a small JSON body. Useful for liveness/readiness probes.
+func makeHealthHandler(logger *slog.Logger) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Log the health check for visibility
+		if logger != nil {
+			logger.InfoContext(r.Context(), "http request", "method", r.Method, "remote", r.RemoteAddr, "path", r.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+	}
 }
