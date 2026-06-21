@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile
 # Builder: compile the Go binary
-FROM golang:1.25.7-trixie AS builder
+FROM golang:1.26.2-trixie AS builder
 WORKDIR /src
 COPY . .
 RUN go mod download
@@ -31,9 +31,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 ### Final image: debian-based runtime with kdig installed
 FROM debian:trixie-slim AS runtime
 
-# Install kdig (knot dnsutils) and CA certificates for DoH/TLS support
+# Upgrade and Install kdig (knot dnsutils) and CA certificates for DoH/TLS support
 RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get autoremove -y \
     && apt-get install -y --no-install-recommends ca-certificates knot-dnsutils curl \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /wdns /usr/local/bin/wdns

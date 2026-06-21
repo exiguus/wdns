@@ -16,7 +16,7 @@ docker run --rm -it wdns:latest
 
 Notes:
 
-- The `Dockerfile` is multi-stage: it builds the binary using `golang:1.25.7-trixie` then copies the result into a slim `debian:trixie-slim` image.
+- The `Dockerfile` is multi-stage: it builds the binary using `golang:1.26.2-trixie` then copies the result into a slim `debian:trixie-slim` image.
 - The service performs DNS queries by invoking the external `kdig` binary (installed in the runtime image).
 
 ## API
