@@ -18,5 +18,3 @@ jobs:
       image_tags: |
         ghcr.io/${{ github.repository }}:${{ github.ref_name }}
         ghcr.io/${{ github.repository }}:latest
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
